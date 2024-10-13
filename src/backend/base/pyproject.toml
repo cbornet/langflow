@@ -54,7 +54,7 @@ ignore = [
     "TD003", # Missing issue link in TODO
 
     # Rules that are TODOs
-    "ANN",
+#    "ANN",
     "ARG",
     "D",
     "DOC",

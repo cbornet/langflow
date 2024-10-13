@@ -27,7 +27,7 @@ def _get_input_type(_input: InputTypes):
     return _input.field_type
 
 
-def build_description(component: Component, output: Output):
+def build_description(component: Component, output: Output) -> str:
     if not output.required_inputs:
         logger.warning(f"Output {output.name} does not have required inputs defined")
 
@@ -61,7 +61,7 @@ def _format_tool_name(name: str):
 
 
 class ComponentToolkit:
-    def __init__(self, component: Component):
+    def __init__(self, component: Component) -> None:
         self.component = component
 
     def get_tools(self) -> list[BaseTool]:

@@ -129,7 +129,7 @@ def build_output_setter(method: Callable, validate: bool = True) -> Callable:
         >>> print(component.get_output_by_method(component.set_message).value)  # Prints "New message"
     """
 
-    def output_setter(self, value):
+    def output_setter(self, value) -> None:
         if validate:
             __validate_method(method)
         methods_class = method.__self__

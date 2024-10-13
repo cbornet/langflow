@@ -12,7 +12,7 @@ class KubernetesSecretManager:
     A class for managing Kubernetes secrets.
     """
 
-    def __init__(self, namespace: str = "langflow"):
+    def __init__(self, namespace: str = "langflow") -> None:
         """
         Initialize the KubernetesSecretManager class.
 

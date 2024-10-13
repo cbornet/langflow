@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 class LangFuseTracer(BaseTracer):
     flow_id: str
 
-    def __init__(self, trace_name: str, trace_type: str, project_name: str, trace_id: UUID):
+    def __init__(self, trace_name: str, trace_type: str, project_name: str, trace_id: UUID) -> None:
         self.project_name = project_name
         self.trace_name = trace_name
         self.trace_type = trace_type
@@ -71,7 +71,7 @@ class LangFuseTracer(BaseTracer):
         inputs: dict[str, Any],
         metadata: dict[str, Any] | None = None,
         vertex: Vertex | None = None,
-    ):
+    ) -> None:
         start_time = datetime.now(tz=timezone.utc)
         if not self._ready:
             return
@@ -100,7 +100,7 @@ class LangFuseTracer(BaseTracer):
         outputs: dict[str, Any] | None = None,
         error: Exception | None = None,
         logs: Sequence[Log | dict] = (),
-    ):
+    ) -> None:
         end_time = datetime.now(tz=timezone.utc)
         if not self._ready:
             return
@@ -120,7 +120,7 @@ class LangFuseTracer(BaseTracer):
         outputs: dict[str, Any],
         error: Exception | None = None,
         metadata: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         if not self._ready:
             return
 

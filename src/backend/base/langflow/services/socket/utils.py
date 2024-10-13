@@ -14,14 +14,14 @@ from langflow.services.database.models.flow.model import Flow
 from langflow.services.deps import get_session
 
 
-def set_socketio_server(socketio_server):
+def set_socketio_server(socketio_server) -> None:
     from langflow.services.deps import get_socket_service
 
     socket_service = get_socket_service()
     socket_service.init(socketio_server)
 
 
-async def get_vertices(sio, sid, flow_id, chat_service):
+async def get_vertices(sio, sid, flow_id, chat_service) -> None:
     try:
         session = get_session()
         flow: Flow = session.exec(select(Flow).where(Flow.id == flow_id)).first()
@@ -50,7 +50,7 @@ async def build_vertex(
     set_cache: Callable,
     tweaks=None,
     inputs=None,
-):
+) -> None:
     try:
         cache = get_cache(flow_id)
         graph = cache.get("result")

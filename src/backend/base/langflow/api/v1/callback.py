@@ -24,7 +24,7 @@ class AsyncStreamingLLMCallbackHandleSIO(AsyncCallbackHandler):
         """Whether to ignore chain callbacks."""
         return False
 
-    def __init__(self, session_id: str):
+    def __init__(self, session_id: str) -> None:
         self.chat_service = get_chat_service()
         self.client_id = session_id
         self.socketio_service: SocketIOService = get_socket_service()
@@ -101,7 +101,7 @@ class AsyncStreamingLLMCallbackHandleSIO(AsyncCallbackHandler):
             )
             await self.socketio_service.emit_message(to=self.sid, data=resp.model_dump())
 
-    async def on_agent_action(self, action: AgentAction, **kwargs: Any):
+    async def on_agent_action(self, action: AgentAction, **kwargs: Any) -> None:
         log = f"Thought: {action.log}"
         # if there are line breaks, split them and send them
         # as separate messages

@@ -1,5 +1,8 @@
+from typing import NoReturn
+
+
 class LazyLoadDictBase:
-    def __init__(self):
+    def __init__(self) -> None:
         self._all_types_dict = None
 
     @property

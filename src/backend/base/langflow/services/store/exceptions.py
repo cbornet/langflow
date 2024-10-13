@@ -1,25 +1,25 @@
 class CustomException(Exception):
-    def __init__(self, detail, status_code):
+    def __init__(self, detail, status_code) -> None:
         super().__init__(detail)
         self.status_code = status_code
 
 
 # Define custom exceptions with status codes
 class UnauthorizedError(CustomException):
-    def __init__(self, detail="Unauthorized access"):
+    def __init__(self, detail="Unauthorized access") -> None:
         super().__init__(detail, 401)
 
 
 class ForbiddenError(CustomException):
-    def __init__(self, detail="Forbidden"):
+    def __init__(self, detail="Forbidden") -> None:
         super().__init__(detail, 403)
 
 
 class APIKeyError(CustomException):
-    def __init__(self, detail="API key error"):
+    def __init__(self, detail="API key error") -> None:
         super().__init__(detail, 400)  # ! Should be 401
 
 
 class FilterError(CustomException):
-    def __init__(self, detail="Filter error"):
+    def __init__(self, detail="Filter error") -> None:
         super().__init__(detail, 400)

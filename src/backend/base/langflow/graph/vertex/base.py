@@ -105,7 +105,7 @@ class Vertex:
         self.state = VertexStates.ACTIVE
         self.log_transaction_tasks: set[asyncio.Task] = set()
 
-    def set_input_value(self, name: str, value: Any):
+    def set_input_value(self, name: str, value: Any) -> None:
         if self._custom_component is None:
             msg = f"Vertex {self.id} does not have a component instance."
             raise ValueError(msg)
@@ -114,20 +114,20 @@ class Vertex:
     def to_data(self):
         return self._data
 
-    def add_component_instance(self, component_instance: Component):
+    def add_component_instance(self, component_instance: Component) -> None:
         component_instance.set_vertex(self)
         self._custom_component = component_instance
 
-    def add_result(self, name: str, result: Any):
+    def add_result(self, name: str, result: Any) -> None:
         self.results[name] = result
 
-    def update_graph_state(self, key, new_state, append: bool):
+    def update_graph_state(self, key, new_state, append: bool) -> None:
         if append:
             self.graph.append_state(key, new_state, caller=self.id)
         else:
             self.graph.update_state(key, new_state, caller=self.id)
 
-    def set_state(self, state: str):
+    def set_state(self, state: str) -> None:
         self.state = VertexStates[state]
         if self.state == VertexStates.INACTIVE and self.graph.in_degree_map[self.id] <= 1:
             # If the vertex is inactive and has only one in degree
@@ -143,7 +143,7 @@ class Vertex:
     def avg_build_time(self):
         return sum(self.build_times) / len(self.build_times) if self.build_times else 0
 
-    def add_build_time(self, time):
+    def add_build_time(self, time) -> None:
         self.build_times.append(time)
 
     def set_result(self, result: ResultData) -> None:
@@ -299,7 +299,7 @@ class Vertex:
                     params[param_key] = self.graph.get_vertex(edge.source_id)
         return params
 
-    def _build_params(self):
+    def _build_params(self) -> None:
         # sourcery skip: merge-list-append, remove-redundant-if
         # Some params are required, some are optional
         # but most importantly, some params are python base classes
@@ -437,7 +437,7 @@ class Vertex:
         self.load_from_db_fields = load_from_db_fields
         self._raw_params = params.copy()
 
-    def update_raw_params(self, new_params: Mapping[str, str | list[str]], overwrite: bool = False):
+    def update_raw_params(self, new_params: Mapping[str, str | list[str]], overwrite: bool = False) -> None:
         """
         Update the raw parameters of the vertex with the given new parameters.
 
@@ -466,7 +466,7 @@ class Vertex:
         """
         return self._has_cycle_edges
 
-    async def instantiate_component(self, user_id=None):
+    async def instantiate_component(self, user_id=None) -> None:
         if not self._custom_component:
             self._custom_component, _ = await initialize.loading.instantiate_class(
                 user_id=user_id,
@@ -478,7 +478,7 @@ class Vertex:
         fallback_to_env_vars,
         user_id=None,
         event_manager: EventManager | None = None,
-    ):
+    ) -> None:
         """
         Initiate the build process.
         """
@@ -548,7 +548,7 @@ class Vertex:
 
         return messages
 
-    def _finalize_build(self):
+    def _finalize_build(self) -> None:
         result_dict = self.get_built_result()
         # We need to set the artifacts to pass information
         # to the frontend
@@ -566,7 +566,7 @@ class Vertex:
         )
         self.set_result(result_dict)
 
-    async def _build_each_vertex_in_params_dict(self, user_id=None):
+    async def _build_each_vertex_in_params_dict(self, user_id=None) -> None:
         """
         Iterates over each vertex in the params dictionary and builds it.
         """
@@ -593,7 +593,7 @@ class Vertex:
         self,
         key,
         vertices_dict: dict[str, Vertex],
-    ):
+    ) -> None:
         """
         Iterates over a dictionary of vertices, builds each and updates the params dictionary.
         """
@@ -656,7 +656,7 @@ class Vertex:
             self._log_transaction_async(str(flow_id), source=self, target=requester, status="success")
         return result
 
-    async def _build_vertex_and_update_params(self, key, vertex: Vertex):
+    async def _build_vertex_and_update_params(self, key, vertex: Vertex) -> None:
         """
         Builds a given vertex and updates the params dictionary accordingly.
         """
@@ -671,7 +671,7 @@ class Vertex:
         self,
         key,
         vertices: list[Vertex],
-    ):
+    ) -> None:
         """
         Iterates over a list of vertices, builds each and updates the params dictionary.
         """
@@ -699,7 +699,7 @@ class Vertex:
                     )
                     raise ValueError(msg) from e
 
-    def _handle_func(self, key, result):
+    def _handle_func(self, key, result) -> None:
         """
         Handles 'func' key by checking if the result is a function and setting it as coroutine.
         """
@@ -714,14 +714,14 @@ class Vertex:
             else:
                 self.params["coroutine"] = sync_to_async(result)
 
-    def _extend_params_list_with_result(self, key, result):
+    def _extend_params_list_with_result(self, key, result) -> None:
         """
         Extends a list in the params dictionary with the given result if it exists.
         """
         if isinstance(self.params[key], list):
             self.params[key].extend(result)
 
-    async def _build_results(self, custom_component, custom_params, fallback_to_env_vars=False):
+    async def _build_results(self, custom_component, custom_params, fallback_to_env_vars=False) -> None:
         try:
             result = await initialize.loading.get_instance_results(
                 custom_component=custom_component,
@@ -740,7 +740,7 @@ class Vertex:
             msg = f"Error building Component {self.display_name}: \n\n{exc}"
             raise ComponentBuildException(msg, tb) from exc
 
-    def _update_built_object_and_artifacts(self, result: Any | tuple[Any, dict] | tuple[Component, Any, dict]):
+    def _update_built_object_and_artifacts(self, result: Any | tuple[Any, dict] | tuple[Component, Any, dict]) -> None:
         """
         Updates the built object and its artifacts.
         """
@@ -758,7 +758,7 @@ class Vertex:
         else:
             self._built_object = result
 
-    def _validate_built_object(self):
+    def _validate_built_object(self) -> None:
         """
         Checks if the built object is None and raises a ValueError if so.
         """
@@ -776,7 +776,7 @@ class Vertex:
                 msg = f"You are trying to stream to a {self.display_name}. Try using a Chat Output instead."
                 raise ValueError(msg)
 
-    def _reset(self, params_update: dict[str, Any] | None = None):
+    def _reset(self, params_update: dict[str, Any] | None = None) -> None:
         self._built = False
         self._built_object = UnbuiltObject()
         self._built_result = UnbuiltResult()
@@ -784,10 +784,10 @@ class Vertex:
         self.steps_ran = []
         self._build_params()
 
-    def _is_chat_input(self):
+    def _is_chat_input(self) -> bool:
         return False
 
-    def build_inactive(self):
+    def build_inactive(self) -> None:
         # Just set the results to None
         self._built = True
         self._built_object = None
@@ -877,11 +877,11 @@ class Vertex:
     def __hash__(self) -> int:
         return id(self)
 
-    def _built_object_repr(self):
+    def _built_object_repr(self) -> str:
         # Add a message with an emoji, stars for sucess,
         return "Built successfully ✨" if self._built_object is not None else "Failed to build 😵‍💫"
 
-    def apply_on_outputs(self, func: Callable[[Any], Any]):
+    def apply_on_outputs(self, func: Callable[[Any], Any]) -> None:
         """Applies a function to the outputs of the vertex."""
         if not self._custom_component or not self._custom_component.outputs:
             return

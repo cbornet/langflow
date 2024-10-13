@@ -329,7 +329,7 @@ def update_edges_with_latest_component_versions(project_data):
     return project_data_copy
 
 
-def log_node_changes(node_changes_log):
+def log_node_changes(node_changes_log) -> None:
     # The idea here is to log the changes that were made to the nodes in debug
     # Something like:
     # Node: "Node Name" was updated with the following changes:
@@ -366,7 +366,7 @@ def load_starter_projects(retries=3, delay=1) -> list[tuple[Path, dict]]:
     return starter_projects
 
 
-def copy_profile_pictures():
+def copy_profile_pictures() -> None:
     config_dir = get_storage_service().settings_service.settings.config_dir
     origin = Path(__file__).parent / "profile_pictures"
     target = Path(config_dir) / "profile_pictures"
@@ -410,7 +410,7 @@ def get_project_data(project):
     )
 
 
-def update_project_file(project_path: Path, project: dict, updated_project_data):
+def update_project_file(project_path: Path, project: dict, updated_project_data) -> None:
     project["data"] = updated_project_data
     with project_path.open("w", encoding="utf-8") as f:
         f.write(orjson.dumps(project, option=ORJSON_OPTIONS).decode())
@@ -426,7 +426,7 @@ def update_existing_project(
     project_data,
     project_icon,
     project_icon_bg_color,
-):
+) -> None:
     logger.info(f"Updating starter project {project_name}")
     existing_project.data = project_data
     existing_project.folder = STARTER_FOLDER_NAME
@@ -447,7 +447,7 @@ def create_new_project(
     project_icon,
     project_icon_bg_color,
     new_folder_id,
-):
+) -> None:
     logger.debug(f"Creating starter project {project_name}")
     new_project = FlowCreate(
         name=project_name,
@@ -467,7 +467,7 @@ def get_all_flows_similar_to_project(session, folder_id):
     return session.exec(select(Folder).where(Folder.id == folder_id)).first().flows
 
 
-def delete_start_projects(session, folder_id):
+def delete_start_projects(session, folder_id) -> None:
     flows = session.exec(select(Folder).where(Folder.id == folder_id)).first().flows
     for flow in flows:
         session.delete(flow)
@@ -498,7 +498,7 @@ def _is_valid_uuid(val):
     return str(uuid_obj) == val
 
 
-def load_flows_from_directory():
+def load_flows_from_directory() -> None:
     """
     On langflow startup, this loads all flows from the directory specified in the settings.
 
@@ -575,7 +575,7 @@ def find_existing_flow(session, flow_id, flow_endpoint_name):
     return None
 
 
-async def create_or_update_starter_projects(get_all_components_coro: Awaitable[dict]):
+async def create_or_update_starter_projects(get_all_components_coro: Awaitable[dict]) -> None:
     try:
         all_types_dict = await get_all_components_coro
     except Exception:
@@ -626,7 +626,7 @@ async def create_or_update_starter_projects(get_all_components_coro: Awaitable[d
                 )
 
 
-def initialize_super_user_if_needed():
+def initialize_super_user_if_needed() -> None:
     settings_service = get_settings_service()
     if not settings_service.auth_settings.AUTO_LOGIN:
         return

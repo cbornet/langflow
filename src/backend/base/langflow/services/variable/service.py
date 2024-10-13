@@ -23,10 +23,10 @@ if TYPE_CHECKING:
 
 
 class DatabaseVariableService(VariableService, Service):
-    def __init__(self, settings_service: SettingsService):
+    def __init__(self, settings_service: SettingsService) -> None:
         self.settings_service = settings_service
 
-    def initialize_user_variables(self, user_id: UUID | str, session: Session = Depends(get_session)):
+    def initialize_user_variables(self, user_id: UUID | str, session: Session = Depends(get_session)) -> None:
         # Check for environment variables that should be stored in the database
         should_or_should_not = "Should" if self.settings_service.settings.store_environment_variables else "Should not"
         logger.info(f"{should_or_should_not} store environment variables in the database.")
@@ -147,7 +147,7 @@ class DatabaseVariableService(VariableService, Service):
         user_id: UUID | str,
         name: str,
         session: Session = Depends(get_session),
-    ):
+    ) -> None:
         stmt = select(Variable).where(Variable.user_id == user_id).where(Variable.name == name)
         variable = session.exec(stmt).first()
         if not variable:
@@ -156,7 +156,7 @@ class DatabaseVariableService(VariableService, Service):
         session.delete(variable)
         session.commit()
 
-    def delete_variable_by_id(self, user_id: UUID | str, variable_id: UUID, session: Session):
+    def delete_variable_by_id(self, user_id: UUID | str, variable_id: UUID, session: Session) -> None:
         variable = session.exec(select(Variable).where(Variable.user_id == user_id, Variable.id == variable_id)).first()
         if not variable:
             msg = f"{variable_id} variable not found."

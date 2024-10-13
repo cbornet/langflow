@@ -3,7 +3,7 @@ from __future__ import annotations
 import time
 from asyncio import Lock
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Annotated
+from typing import TYPE_CHECKING, Annotated, NoReturn
 from uuid import UUID
 
 import sqlalchemy as sa
@@ -79,7 +79,7 @@ async def get_all(
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-def validate_input_and_tweaks(input_request: SimplifiedAPIRequest):
+def validate_input_and_tweaks(input_request: SimplifiedAPIRequest) -> None:
     # If the input_value is not None and the input_type is "chat"
     # then we need to check the tweaks if the ChatInput component is present
     # and if its input_value is not None
@@ -506,7 +506,7 @@ async def process(
     api_key_user: UserRead = Depends(api_key_security),
     sync: Annotated[bool, Body(embed=True)] = True,
     session_service: SessionService = Depends(get_session_service),
-):
+) -> ProcessResponse:
     """
     Endpoint to process an input with a given flow_id.
     """

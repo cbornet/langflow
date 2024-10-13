@@ -20,7 +20,7 @@ class ExceptionBody(BaseModel):
 
 
 class APIException(HTTPException):
-    def __init__(self, exception: Exception, flow: Flow | None = None, status_code: int = 500):
+    def __init__(self, exception: Exception, flow: Flow | None = None, status_code: int = 500) -> None:
         body = self.build_exception_body(exception, flow)
         super().__init__(status_code=status_code, detail=body.model_dump_json())
 

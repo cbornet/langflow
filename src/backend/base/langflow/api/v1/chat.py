@@ -416,7 +416,7 @@ async def build_flow(
     event_manager = create_default_event_manager(queue=asyncio_queue)
     main_task = asyncio.create_task(event_generator(event_manager, asyncio_queue_client_consumed))
 
-    def on_disconnect():
+    def on_disconnect() -> None:
         logger.debug("Client disconnected, closing tasks")
         main_task.cancel()
 
@@ -436,7 +436,7 @@ class DisconnectHandlerStreamingResponse(StreamingResponse):
         media_type: str | None = None,
         background: BackgroundTask | None = None,
         on_disconnect: typing.Callable | None = None,
-    ):
+    ) -> None:
         super().__init__(content, status_code, headers, media_type, background)
         self.on_disconnect = on_disconnect
 

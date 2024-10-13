@@ -67,7 +67,7 @@ class AstraAssistantManager(ComponentWithCache):
         Output(display_name="Assistant Id", name="output_assistant_id", method="get_assistant_id"),
     ]
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self.lock = asyncio.Lock()
         self.initialized = False
@@ -93,13 +93,13 @@ class AstraAssistantManager(ComponentWithCache):
         await self.initialize()
         return self.assistant_id
 
-    async def initialize(self):
+    async def initialize(self) -> None:
         async with self.lock:
             if not self.initialized:
                 await self.process_inputs()
                 self.initialized = True
 
-    async def process_inputs(self):
+    async def process_inputs(self) -> None:
         logger.info(f"env_set is {self.env_set}")
         logger.info(self.tool)
         tools = []

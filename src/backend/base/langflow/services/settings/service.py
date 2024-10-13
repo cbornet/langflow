@@ -8,7 +8,7 @@ from langflow.services.settings.base import Settings
 class SettingsService(Service):
     name = "settings_service"
 
-    def __init__(self, settings: Settings, auth_settings: AuthSettings):
+    def __init__(self, settings: Settings, auth_settings: AuthSettings) -> None:
         super().__init__()
         self.settings: Settings = settings
         self.auth_settings: AuthSettings = auth_settings

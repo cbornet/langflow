@@ -1,4 +1,4 @@
 class NoComponentInstance(Exception):
-    def __init__(self, vertex_id: str):
+    def __init__(self, vertex_id: str) -> None:
         message = f"Vertex {vertex_id} does not have a component instance."
         super().__init__(message)

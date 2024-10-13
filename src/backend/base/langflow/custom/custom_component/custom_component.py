@@ -86,7 +86,7 @@ class CustomComponent(BaseComponent):
     _tracing_service: TracingService | None = None
     _tree: dict | None = None
 
-    def __init__(self, **data):
+    def __init__(self, **data) -> None:
         """
         Initializes a new instance of the CustomComponent class.
 
@@ -99,18 +99,18 @@ class CustomComponent(BaseComponent):
         self._artifacts = {}
         super().__init__(**data)
 
-    def set_attributes(self, parameters: dict):
+    def set_attributes(self, parameters: dict) -> None:
         pass
 
-    def set_parameters(self, parameters: dict):
+    def set_parameters(self, parameters: dict) -> None:
         self._parameters = parameters
         self.set_attributes(self._parameters)
 
     @property
-    def trace_name(self):
+    def trace_name(self) -> str:
         return f"{self.display_name} ({self._vertex.id})"
 
-    def update_state(self, name: str, value: Any):
+    def update_state(self, name: str, value: Any) -> None:
         if not self._vertex:
             msg = "Vertex is not set"
             raise ValueError(msg)
@@ -120,7 +120,7 @@ class CustomComponent(BaseComponent):
             msg = f"Error updating state: {e}"
             raise ValueError(msg) from e
 
-    def stop(self, output_name: str | None = None):
+    def stop(self, output_name: str | None = None) -> None:
         if not output_name and self._vertex and len(self._vertex.outputs) == 1:
             output_name = self._vertex.outputs[0]["name"]
         elif not output_name:
@@ -135,7 +135,7 @@ class CustomComponent(BaseComponent):
             msg = f"Error stopping {self.display_name}: {e}"
             raise ValueError(msg) from e
 
-    def append_state(self, name: str, value: Any):
+    def append_state(self, name: str, value: Any) -> None:
         if not self._vertex:
             msg = "Vertex is not set"
             raise ValueError(msg)

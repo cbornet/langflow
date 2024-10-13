@@ -80,7 +80,7 @@ class StoreService(Service):
 
     name = "store_service"
 
-    def __init__(self, settings_service: SettingsService):
+    def __init__(self, settings_service: SettingsService) -> None:
         self.settings_service = settings_service
         self.base_url = self.settings_service.settings.store_url
         self.download_webhook_url = self.settings_service.settings.download_webhook_url

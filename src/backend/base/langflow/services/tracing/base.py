@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, NoReturn
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class BaseTracer(ABC):
     @abstractmethod
-    def __init__(self, trace_name: str, trace_type: str, project_name: str, trace_id: UUID):
+    def __init__(self, trace_name: str, trace_type: str, project_name: str, trace_id: UUID) -> None:
         raise NotImplementedError
 
     @property
@@ -32,7 +32,7 @@ class BaseTracer(ABC):
         inputs: dict[str, Any],
         metadata: dict[str, Any] | None = None,
         vertex: Vertex | None = None,
-    ):
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -43,7 +43,7 @@ class BaseTracer(ABC):
         outputs: dict[str, Any] | None = None,
         error: Exception | None = None,
         logs: Sequence[Log | dict] = (),
-    ):
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -53,7 +53,7 @@ class BaseTracer(ABC):
         outputs: dict[str, Any],
         error: Exception | None = None,
         metadata: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod

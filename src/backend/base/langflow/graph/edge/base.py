@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class Edge:
-    def __init__(self, source: Vertex, target: Vertex, edge: EdgeData):
+    def __init__(self, source: Vertex, target: Vertex, edge: EdgeData) -> None:
         self.source_id: str = source.id if source else ""
         self.target_id: str = target.id if target else ""
         self.valid_handles: bool = False
@@ -209,7 +209,7 @@ class Edge:
 
 
 class CycleEdge(Edge):
-    def __init__(self, source: Vertex, target: Vertex, raw_edge: EdgeData):
+    def __init__(self, source: Vertex, target: Vertex, raw_edge: EdgeData) -> None:
         super().__init__(source, target, raw_edge)
         self.is_fulfilled = False  # Whether the contract has been fulfilled.
         self.result: Any = None

@@ -11,5 +11,5 @@ if TYPE_CHECKING:
 class AuthService(Service):
     name = "auth_service"
 
-    def __init__(self, settings_service: SettingsService):
+    def __init__(self, settings_service: SettingsService) -> None:
         self.settings_service = settings_service

@@ -33,7 +33,7 @@ class dotdict(dict):
             msg = f"'dotdict' object has no attribute '{attr}'"
             raise AttributeError(msg) from e
 
-    def __setattr__(self, key, value):
+    def __setattr__(self, key, value) -> None:
         """
         Override attribute setting to work as dictionary item assignment.
 
@@ -45,7 +45,7 @@ class dotdict(dict):
             value = dotdict(value)
         self[key] = value
 
-    def __delattr__(self, key):
+    def __delattr__(self, key) -> None:
         """
         Override attribute deletion to work as dictionary item deletion.
 

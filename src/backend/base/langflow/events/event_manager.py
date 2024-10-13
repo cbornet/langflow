@@ -19,12 +19,12 @@ class PartialEventCallback(Protocol):
 
 
 class EventManager:
-    def __init__(self, queue: asyncio.Queue):
+    def __init__(self, queue: asyncio.Queue) -> None:
         self.queue = queue
         self.events: dict[str, PartialEventCallback] = {}
 
     @staticmethod
-    def _validate_callback(callback: EventCallback):
+    def _validate_callback(callback: EventCallback) -> None:
         if not callable(callback):
             msg = "Callback must be callable"
             raise TypeError(msg)
@@ -38,7 +38,7 @@ class EventManager:
             msg = "Callback must have exactly 3 parameters: manager, event_type, and data"
             raise ValueError(msg)
 
-    def register_event(self, name: str, event_type: str, callback: EventCallback | None = None):
+    def register_event(self, name: str, event_type: str, callback: EventCallback | None = None) -> None:
         if not name:
             msg = "Event name cannot be empty"
             raise ValueError(msg)
@@ -51,13 +51,13 @@ class EventManager:
             _callback = partial(callback, manager=self, event_type=event_type)
         self.events[name] = _callback
 
-    def send_event(self, *, event_type: str, data: LoggableType):
+    def send_event(self, *, event_type: str, data: LoggableType) -> None:
         json_data = {"event": event_type, "data": data}
         event_id = uuid.uuid4()
         str_data = json.dumps(json_data) + "\n\n"
         self.queue.put_nowait((event_id, str_data.encode("utf-8"), time.time()))
 
-    def noop(self, *, data: LoggableType):
+    def noop(self, *, data: LoggableType) -> None:
         pass
 
     def __getattr__(self, name: str) -> PartialEventCallback:

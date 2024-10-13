@@ -34,5 +34,5 @@ class MissingDefault:
     A class to represent a missing default value.
     """
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "MISSING"

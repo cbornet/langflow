@@ -57,7 +57,7 @@ class InterfaceComponentTypes(str, Enum, metaclass=ContainsEnumMeta):
     DataOutput = "DataOutput"
     WebhookInput = "Webhook"
 
-    def __contains__(cls, item):
+    def __contains__(cls, item) -> bool:
         try:
             cls(item)
         except ValueError:

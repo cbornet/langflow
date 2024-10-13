@@ -22,8 +22,8 @@ class Service(ABC):
             }
         return schema
 
-    async def teardown(self):
+    async def teardown(self) -> None:
         return
 
-    def set_ready(self):
+    def set_ready(self) -> None:
         self.ready = True

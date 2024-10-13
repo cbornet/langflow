@@ -21,12 +21,12 @@ if TYPE_CHECKING:
 
 
 class KubernetesSecretService(VariableService, Service):
-    def __init__(self, settings_service: SettingsService):
+    def __init__(self, settings_service: SettingsService) -> None:
         self.settings_service = settings_service
         # TODO: settings_service to set kubernetes namespace
         self.kubernetes_secrets = KubernetesSecretManager()
 
-    def initialize_user_variables(self, user_id: UUID | str, session: Session):
+    def initialize_user_variables(self, user_id: UUID | str, session: Session) -> None:
         # Check for environment variables that should be stored in the database
         should_or_should_not = "Should" if self.settings_service.settings.store_environment_variables else "Should not"
         logger.info(f"{should_or_should_not} store environment variables in the kubernetes.")

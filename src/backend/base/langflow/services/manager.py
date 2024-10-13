@@ -24,13 +24,13 @@ class ServiceManager:
     Manages the creation of different services.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.services: dict[str, Service] = {}
         self.factories = {}
         self.register_factories()
         self.keyed_lock = KeyedMemoryLockManager()
 
-    def register_factories(self):
+    def register_factories(self) -> None:
         for factory in self.get_factories():
             try:
                 self.register_factory(factory)
@@ -40,7 +40,7 @@ class ServiceManager:
     def register_factory(
         self,
         service_factory: ServiceFactory,
-    ):
+    ) -> None:
         """
         Registers a new factory with dependencies.
         """
@@ -59,7 +59,7 @@ class ServiceManager:
 
         return self.services[service_name]
 
-    def _create_service(self, service_name: ServiceType, default: ServiceFactory | None = None):
+    def _create_service(self, service_name: ServiceType, default: ServiceFactory | None = None) -> None:
         """
         Create a new service given its name, handling dependencies.
         """
@@ -82,7 +82,7 @@ class ServiceManager:
         self.services[service_name] = self.factories[service_name].create(**dependent_services)
         self.services[service_name].set_ready()
 
-    def _validate_service_creation(self, service_name: ServiceType, default: ServiceFactory | None = None):
+    def _validate_service_creation(self, service_name: ServiceType, default: ServiceFactory | None = None) -> None:
         """
         Validate whether the service can be created.
         """
@@ -90,7 +90,7 @@ class ServiceManager:
             msg = f"No factory registered for the service class '{service_name.name}'"
             raise NoFactoryRegisteredError(msg)
 
-    def update(self, service_name: ServiceType):
+    def update(self, service_name: ServiceType) -> None:
         """
         Update a service by its name.
         """
@@ -99,7 +99,7 @@ class ServiceManager:
             self.services.pop(service_name, None)
             self.get(service_name)
 
-    async def teardown(self):
+    async def teardown(self) -> None:
         """
         Teardown all the services.
         """
@@ -147,7 +147,7 @@ class ServiceManager:
 service_manager = ServiceManager()
 
 
-def initialize_settings_service():
+def initialize_settings_service() -> None:
     """
     Initialize the settings manager.
     """
@@ -156,7 +156,7 @@ def initialize_settings_service():
     service_manager.register_factory(settings_factory.SettingsServiceFactory())
 
 
-def initialize_session_service():
+def initialize_session_service() -> None:
     """
     Initialize the session manager.
     """
