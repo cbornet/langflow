@@ -695,7 +695,7 @@ async def _stream_vertex(flow_id: str, vertex_id: str, chat_service: ChatService
 async def build_vertex_stream(
     flow_id: uuid.UUID,
     vertex_id: str,
-    chat_service: ChatService = Depends(get_chat_service),
+    chat_service: Annotated[ChatService, Depends(get_chat_service)],
 ):
     """Build a vertex instead of the entire graph.
 
