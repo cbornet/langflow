@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 from sqlmodel import Session, select
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from langflow.services.auth import utils as auth_utils
 from langflow.services.base import Service
@@ -24,7 +25,7 @@ class DatabaseVariableService(VariableService, Service):
     def __init__(self, settings_service: SettingsService):
         self.settings_service = settings_service
 
-    def initialize_user_variables(self, user_id: UUID | str, session: Session) -> None:
+    async def initialize_user_variables(self, user_id: UUID | str, session: AsyncSession) -> None:
         if not self.settings_service.settings.store_environment_variables:
             logger.info("Skipping environment variable storage.")
             return
@@ -34,10 +35,10 @@ class DatabaseVariableService(VariableService, Service):
             if var_name in os.environ and os.environ[var_name].strip():
                 value = os.environ[var_name].strip()
                 query = select(Variable).where(Variable.user_id == user_id, Variable.name == var_name)
-                existing = session.exec(query).first()
+                existing = (await session.exec(query)).first()
                 try:
                     if existing:
-                        self.update_variable(user_id, var_name, value, session)
+                        await self.update_variable(user_id, var_name, value, session)
                     else:
                         self.create_variable(
                             user_id=user_id,
@@ -83,14 +84,14 @@ class DatabaseVariableService(VariableService, Service):
         variables = self.get_all(user_id=user_id, session=session)
         return [variable.name for variable in variables if variable]
 
-    def update_variable(
+    async def update_variable(
         self,
         user_id: UUID | str,
         name: str,
         value: str,
-        session: Session,
+        session: AsyncSession,
     ):
-        variable = session.exec(select(Variable).where(Variable.user_id == user_id, Variable.name == name)).first()
+        variable = (await session.exec(select(Variable).where(Variable.user_id == user_id, Variable.name == name))).first()
         if not variable:
             msg = f"{name} variable not found."
             raise ValueError(msg)

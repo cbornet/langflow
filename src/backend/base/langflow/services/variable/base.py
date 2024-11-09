@@ -2,6 +2,7 @@ import abc
 from uuid import UUID
 
 from sqlmodel import Session
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from langflow.services.base import Service
 from langflow.services.database.models.variable.model import Variable
@@ -13,7 +14,7 @@ class VariableService(Service):
     name = "variable_service"
 
     @abc.abstractmethod
-    def initialize_user_variables(self, user_id: UUID | str, session: Session) -> None:
+    async def initialize_user_variables(self, user_id: UUID | str, session: AsyncSession) -> None:
         """Initialize user variables.
 
         Args:
@@ -48,7 +49,7 @@ class VariableService(Service):
         """
 
     @abc.abstractmethod
-    def update_variable(self, user_id: UUID | str, name: str, value: str, session: Session) -> Variable:
+    async def update_variable(self, user_id: UUID | str, name: str, value: str, session: Session) -> Variable:
         """Update a variable.
 
         Args:

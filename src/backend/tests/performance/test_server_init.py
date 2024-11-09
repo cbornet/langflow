@@ -46,7 +46,7 @@ async def test_initialize_super_user():
     from langflow.services.utils import initialize_services
 
     await asyncio.to_thread(initialize_services, fix_migration=False)
-    await asyncio.to_thread(initialize_super_user_if_needed)
+    await initialize_super_user_if_needed()
     settings_service = await asyncio.to_thread(get_settings_service)
     assert "test_performance.db" in settings_service.settings.database_url
 

@@ -4,6 +4,7 @@ import os
 from typing import TYPE_CHECKING
 
 from loguru import logger
+from sqlmodel.ext.asyncio.session import AsyncSession
 from typing_extensions import override
 
 from langflow.services.auth import utils as auth_utils
@@ -28,7 +29,7 @@ class KubernetesSecretService(VariableService, Service):
         self.kubernetes_secrets = KubernetesSecretManager()
 
     @override
-    def initialize_user_variables(self, user_id: UUID | str, session: Session) -> None:
+    async def initialize_user_variables(self, user_id: UUID | str, session: AsyncSession) -> None:
         # Check for environment variables that should be stored in the database
         should_or_should_not = "Should" if self.settings_service.settings.store_environment_variables else "Should not"
         logger.info(f"{should_or_should_not} store environment variables in the kubernetes.")
@@ -109,16 +110,16 @@ class KubernetesSecretService(VariableService, Service):
                 names.append(key)
         return names
 
-    def update_variable(
+    async def update_variable(
         self,
         user_id: UUID | str,
         name: str,
         value: str,
-        _session: Session,
+        session: AsyncSession,
     ):
         secret_name = encode_user_id(user_id)
         secret_key, _ = self.resolve_variable(secret_name, user_id, name)
-        return self.kubernetes_secrets.update_secret(name=secret_name, data={secret_key: value})
+        return await self.kubernetes_secrets.update_secret(name=secret_name, data={secret_key: value})
 
     def delete_variable(self, user_id: UUID | str, name: str, _session: Session) -> None:
         secret_name = encode_user_id(user_id)
