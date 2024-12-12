@@ -2,7 +2,7 @@ from uuid import UUID
 
 import pytest
 from httpx import AsyncClient
-from langflow.memory import aadd_messagetables
+from langflow.memory import add_messagetables
 
 # Assuming you have these imports available
 from langflow.services.database.models.message import MessageCreate, MessageRead, MessageUpdate
@@ -15,7 +15,7 @@ async def created_message():
     async with async_session_scope() as session:
         message = MessageCreate(text="Test message", sender="User", sender_name="User", session_id="session_id")
         messagetable = MessageTable.model_validate(message, from_attributes=True)
-        messagetables = await aadd_messagetables([messagetable], session)
+        messagetables = await add_messagetables([messagetable], session)
         return MessageRead.model_validate(messagetables[0], from_attributes=True)
 
 
@@ -28,7 +28,7 @@ async def created_messages(session):  # noqa: ARG001
             MessageCreate(text="Test message 3", sender="User", sender_name="User", session_id="session_id2"),
         ]
         messagetables = [MessageTable.model_validate(message, from_attributes=True) for message in messages]
-        return await aadd_messagetables(messagetables, _session)
+        return await add_messagetables(messagetables, _session)
 
 
 @pytest.mark.api_key_required

@@ -1,5 +1,5 @@
 from langflow.custom import CustomComponent
-from langflow.memory import aget_messages, astore_message
+from langflow.memory import astore_message, get_messages
 from langflow.schema.message import Message
 
 
@@ -19,6 +19,6 @@ class StoreMessageComponent(CustomComponent):
     ) -> Message:
         flow_id = self.graph.flow_id if hasattr(self, "graph") else None
         await astore_message(message, flow_id=flow_id)
-        self.status = await aget_messages()
+        self.status = await get_messages()
 
         return message

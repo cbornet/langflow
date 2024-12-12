@@ -25,7 +25,7 @@ from langflow.exceptions.component import StreamingError
 from langflow.field_typing import Tool  # noqa: TC001 Needed by _add_toolkit_output
 from langflow.graph.state.model import create_state_model
 from langflow.helpers.custom import format_type
-from langflow.memory import astore_message, aupdate_messages, delete_message
+from langflow.memory import astore_message, delete_message, update_messages
 from langflow.schema.artifact import get_artifact_type, post_process_raw
 from langflow.schema.data import Data
 from langflow.schema.message import ErrorMessage, Message
@@ -1083,7 +1083,7 @@ class Component(CustomComponent):
 
             message.flow_id = flow_id
 
-        message_tables = await aupdate_messages(message)
+        message_tables = await update_messages(message)
         if not message_tables:
             msg = "Failed to update message"
             raise ValueError(msg)

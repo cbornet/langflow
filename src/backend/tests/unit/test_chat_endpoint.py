@@ -2,7 +2,7 @@ import json
 from uuid import UUID
 
 import pytest
-from langflow.memory import aget_messages
+from langflow.memory import get_messages
 from langflow.services.database.models.flow import FlowCreate, FlowUpdate
 from orjson import orjson
 
@@ -51,7 +51,7 @@ async def test_build_flow_with_frozen_path(client, json_memory_chatbot_no_llm, l
 
 
 async def check_messages(flow_id):
-    messages = await aget_messages(flow_id=UUID(flow_id), order="ASC")
+    messages = await get_messages(flow_id=UUID(flow_id), order="ASC")
     assert len(messages) == 2
     assert messages[0].session_id == flow_id
     assert messages[0].sender == "User"
