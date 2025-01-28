@@ -617,6 +617,7 @@ async def create_or_update_starter_projects(all_types_dict: dict) -> None:
         new_folder = await create_starter_folder(session)
         starter_projects = await asyncio.to_thread(load_starter_projects)
         await delete_start_projects(session, new_folder.id)
+        await session.refresh(new_folder)
         await asyncio.to_thread(copy_profile_pictures)
         for project_path, project in starter_projects:
             (
