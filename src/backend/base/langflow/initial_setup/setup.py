@@ -363,14 +363,13 @@ def log_node_changes(node_changes_log) -> None:
         logger.debug("\n".join(formatted_messages))
 
 
-def load_starter_projects(retries=3, delay=1) -> list[tuple[anyio.Path, dict]]:
+def load_starter_projects(retries=3, delay=1) -> list[tuple[Path, dict]]:
     starter_projects = []
     folder = Path(__file__).parent / "starter_projects"
     for file in folder.glob("*.json"):
         attempt = 0
         while attempt < retries:
-            with open(str(file), "r", encoding="utf-8") as f:
-                content = f.read()
+            content = file.read_text(encoding="utf-8")
             try:
                 project = orjson.loads(content)
                 starter_projects.append((file, project))
@@ -385,23 +384,23 @@ def load_starter_projects(retries=3, delay=1) -> list[tuple[anyio.Path, dict]]:
     return starter_projects
 
 
-async def copy_profile_pictures() -> None:
+def copy_profile_pictures() -> None:
     config_dir = get_storage_service().settings_service.settings.config_dir
     if config_dir is None:
         msg = "Config dir is not set in the settings"
         raise ValueError(msg)
-    origin = anyio.Path(__file__).parent / "profile_pictures"
-    target = anyio.Path(config_dir) / "profile_pictures"
+    origin = Path(__file__).parent / "profile_pictures"
+    target = Path(config_dir) / "profile_pictures"
 
-    if not await origin.exists():
+    if not origin.exists():
         msg = f"The source folder '{origin}' does not exist."
         raise ValueError(msg)
 
-    if not await target.exists():
-        await target.mkdir(parents=True)
+    if not target.exists():
+        target.mkdir(parents=True)
 
     try:
-        await asyncio.to_thread(shutil.copytree, str(origin), str(target), dirs_exist_ok=True)
+        shutil.copytree(origin, target, dirs_exist_ok=True)
         logger.debug(f"Folder copied from '{origin}' to '{target}'")
 
     except Exception:  # noqa: BLE001
@@ -618,7 +617,7 @@ async def create_or_update_starter_projects(all_types_dict: dict) -> None:
         new_folder = await create_starter_folder(session)
         starter_projects = await asyncio.to_thread(load_starter_projects)
         await delete_start_projects(session, new_folder.id)
-        await copy_profile_pictures()
+        await asyncio.to_thread(copy_profile_pictures)
         for project_path, project in starter_projects:
             (
                 project_name,
