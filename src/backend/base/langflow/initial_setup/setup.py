@@ -611,7 +611,8 @@ async def find_existing_flow(session, flow_id, flow_endpoint_name):
 
 
 async def create_or_update_starter_projects(all_types_dict: dict) -> None:
-    async with async_session_scope() as session:
+    logger.info("Creating or updating starter projects")
+    async with async_session_scope("create_or_update_starter_projects") as session:
         new_folder = await create_starter_folder(session)
         starter_projects = await load_starter_projects()
         await delete_start_projects(session, new_folder.id)
@@ -654,6 +655,7 @@ async def create_or_update_starter_projects(all_types_dict: dict) -> None:
                     project_tags=project_tags,
                     new_folder_id=new_folder.id,
                 )
+    logger.info("exit Creating or updating starter projects")
 
 
 async def initialize_super_user_if_needed() -> None:

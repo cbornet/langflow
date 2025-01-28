@@ -180,7 +180,7 @@ def session_scope() -> Generator[Session, None, None]:
 
 
 @asynccontextmanager
-async def async_session_scope() -> AsyncGenerator[AsyncSession, None]:
+async def async_session_scope(l:str="") -> AsyncGenerator[AsyncSession, None]:
     """Context manager for managing an async session scope.
 
     This context manager is used to manage an async session scope for database operations.
@@ -194,15 +194,25 @@ async def async_session_scope() -> AsyncGenerator[AsyncSession, None]:
         Exception: If an error occurs during the session scope.
 
     """
+    if l:
+        logger.info(f"entering async_session_scope with label: {l}")
     db_service = get_db_service()
     async with db_service.with_async_session() as session:
         try:
             yield session
+            if l:
+                logger.info(f"committing async_session_scope with label: {l}")
             await session.commit()
+            if l:
+                logger.info(f"committed async_session_scope with label: {l}")
         except Exception:
+            if l:
+                logger.info(f"An error occurred async_session_scope with label: {l}")
             logger.exception("An error occurred during the session scope.")
             await session.rollback()
             raise
+    if l:
+        logger.info(f"exiting async_session_scope with label: {l}")
 
 
 def get_cache_service() -> CacheService | AsyncBaseCacheService:
