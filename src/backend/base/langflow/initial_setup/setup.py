@@ -501,7 +501,8 @@ async def delete_start_projects(session, folder_id) -> None:
     flows = await get_all_flows_similar_to_project(session, folder_id)
     for flow in flows:
         await session.delete(flow)
-    await session.commit()
+        await session.commit()
+        await session.refresh(flow)
 
 
 async def folder_exists(session, folder_name):
@@ -642,6 +643,7 @@ async def create_or_update_starter_projects(all_types_dict: dict) -> None:
             if project_name and project_data:
                 for existing_project in await get_all_flows_similar_to_project(session, new_folder.id):
                     await session.delete(existing_project)
+                    await session.refresh(existing_project)
 
                 create_new_project(
                     session=session,
