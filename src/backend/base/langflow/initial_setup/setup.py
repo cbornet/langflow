@@ -435,10 +435,9 @@ def get_project_data(project):
     )
 
 
-async def update_project_file(project_path: anyio.Path, project: dict, updated_project_data) -> None:
+def update_project_file(project_path: Path, project: dict, updated_project_data) -> None:
     project["data"] = updated_project_data
-    async with async_open(str(project_path), "w", encoding="utf-8") as f:
-        await f.write(orjson.dumps(project, option=ORJSON_OPTIONS).decode())
+    project_path.write_text(orjson.dumps(project, option=ORJSON_OPTIONS).decode(), encoding="utf-8")
     logger.info(f"Updated starter project {project['name']} file")
 
 
@@ -639,7 +638,7 @@ async def create_or_update_starter_projects(all_types_dict: dict) -> None:
                 project_data = updated_project_data
                 # We also need to update the project data in the file
 
-                await update_project_file(project_path, project, updated_project_data)
+                await asyncio.to_thread(update_project_file, project_path, project, updated_project_data)
             if project_name and project_data:
                 # for existing_project in await get_all_flows_similar_to_project(session, new_folder.id):
                 #     await session.delete(existing_project)
