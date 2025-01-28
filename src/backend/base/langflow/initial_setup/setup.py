@@ -2,9 +2,11 @@ import asyncio
 import copy
 import json
 import shutil
+import time
 from collections import defaultdict
 from copy import deepcopy
 from datetime import datetime, timezone
+from pathlib import Path
 from uuid import UUID
 
 import anyio
@@ -361,14 +363,14 @@ def log_node_changes(node_changes_log) -> None:
         logger.debug("\n".join(formatted_messages))
 
 
-async def load_starter_projects(retries=3, delay=1) -> list[tuple[anyio.Path, dict]]:
+def load_starter_projects(retries=3, delay=1) -> list[tuple[anyio.Path, dict]]:
     starter_projects = []
-    folder = anyio.Path(__file__).parent / "starter_projects"
-    async for file in folder.glob("*.json"):
+    folder = Path(__file__).parent / "starter_projects"
+    for file in folder.glob("*.json"):
         attempt = 0
         while attempt < retries:
-            async with async_open(str(file), "r", encoding="utf-8") as f:
-                content = await f.read()
+            with open(str(file), "r", encoding="utf-8") as f:
+                content = f.read()
             try:
                 project = orjson.loads(content)
                 starter_projects.append((file, project))
@@ -379,7 +381,7 @@ async def load_starter_projects(retries=3, delay=1) -> list[tuple[anyio.Path, di
                 if attempt >= retries:
                     msg = f"Error loading starter project {file}: {e}"
                     raise ValueError(msg) from e
-                await asyncio.sleep(delay)  # Wait before retrying
+                time.sleep(delay)  # Wait before retrying
     return starter_projects
 
 
@@ -614,7 +616,7 @@ async def create_or_update_starter_projects(all_types_dict: dict) -> None:
     logger.info("Creating or updating starter projects")
     async with async_session_scope("create_or_update_starter_projects") as session:
         new_folder = await create_starter_folder(session)
-        starter_projects = await load_starter_projects()
+        starter_projects = await asyncio.to_thread(load_starter_projects)
         await delete_start_projects(session, new_folder.id)
         await copy_profile_pictures()
         for project_path, project in starter_projects:
