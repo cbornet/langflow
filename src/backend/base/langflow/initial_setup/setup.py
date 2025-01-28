@@ -32,7 +32,7 @@ from langflow.services.deps import (
     async_session_scope,
     get_settings_service,
     get_storage_service,
-    get_variable_service,
+    get_variable_service, get_db_service,
 )
 from langflow.template.field.prompt import DEFAULT_PROMPT_INTUT_TYPES
 from langflow.utils.util import escape_json_dump
@@ -613,7 +613,7 @@ async def find_existing_flow(session, flow_id, flow_endpoint_name):
 
 async def create_or_update_starter_projects(all_types_dict: dict) -> None:
     logger.info("Creating or updating starter projects")
-    async with async_session_scope("create_or_update_starter_projects") as session:
+    async with get_db_service().with_async_session() as session:
         new_folder = await create_starter_folder(session)
         starter_projects = await asyncio.to_thread(load_starter_projects)
         await delete_start_projects(session, new_folder.id)
@@ -656,6 +656,7 @@ async def create_or_update_starter_projects(all_types_dict: dict) -> None:
                     project_tags=project_tags,
                     new_folder_id=new_folder.id,
                 )
+        await session.commit()
     logger.info("exit Creating or updating starter projects")
 
 
