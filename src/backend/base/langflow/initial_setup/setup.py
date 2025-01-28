@@ -641,9 +641,9 @@ async def create_or_update_starter_projects(all_types_dict: dict) -> None:
 
                 await update_project_file(project_path, project, updated_project_data)
             if project_name and project_data:
-                for existing_project in await get_all_flows_similar_to_project(session, new_folder.id):
-                    await session.delete(existing_project)
-                await session.commit()
+                # for existing_project in await get_all_flows_similar_to_project(session, new_folder.id):
+                #     await session.delete(existing_project)
+                # await session.commit()
 
                 create_new_project(
                     session=session,
